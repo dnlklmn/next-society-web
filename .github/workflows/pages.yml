@@ -1,0 +1,54 @@
+# Builds the site and publishes it to GitHub Pages.
+#
+# The build fetches the wiki first (scripts/fetch-wiki.mjs). That needs no
+# credentials: Outline serves published shares unauthenticated, so there is no
+# token in this workflow and nothing to rotate.
+#
+# PREVIEW=1 adds <meta name="robots" content="noindex"> — see src/layouts/Base.astro.
+# Drop it when this becomes the real site.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          PREVIEW: "1"
+          # GitHub Pages serves a project repo at /<repo>, so the built URLs are
+          # rebased to match. Drop this when the site gets its own domain.
+          BASE_PATH: ${{ github.event.repository.name != format('{0}.github.io', github.repository_owner) && format('/{0}', github.event.repository.name) || '' }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

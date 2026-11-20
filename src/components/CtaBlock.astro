@@ -1,0 +1,50 @@
+---
+/**
+ * The participation block from the 3.5 design, generalised so subpages can reuse it.
+ * NS 3.5/Section/Participation (0:852): lilac ground, mono eyebrow, CTA heading,
+ * body line, two buttons.
+ */
+import Button from "./Button.astro";
+
+interface Action {
+  label: string;
+  href: string;
+  appearance?: "filled" | "outline" | "inverse";
+}
+interface Props {
+  eyebrow: string;
+  title: string;
+  body?: string;
+  actions: Action[];
+  divider?: boolean;
+}
+const { eyebrow, title, body, actions, divider = true } = Astro.props;
+---
+
+<section class="bg-lilac">
+  {divider && (
+    <div class="ns-container">
+      <span class="block h-px w-full bg-line"></span>
+    </div>
+  )}
+
+  <div class="ns-container py-[52px] md:py-[64px]">
+    <p class="ns-type-eyebrow font-mono text-ink-muted">{eyebrow}</p>
+
+    <h2 class="ns-type-cta mt-[var(--ns-space-16)] max-w-[1040px] font-medium text-ink">{title}</h2>
+
+    {body && <p class="ns-type-body-intro mt-[var(--ns-space-24)] text-ink">{body}</p>}
+
+    <div class="mt-[var(--ns-space-24)] grid grid-cols-2 gap-[var(--ns-space-16)] md:flex md:flex-wrap">
+      {actions.map((action) => (
+        <Button
+          label={action.label}
+          href={action.href}
+          appearance={action.appearance}
+          external
+          class="w-full md:w-auto"
+        />
+      ))}
+    </div>
+  </div>
+</section>

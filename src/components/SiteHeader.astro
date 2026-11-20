@@ -1,0 +1,166 @@
+---
+/**
+ * NS 3.5/Section/Navigation  (Figma node 0:781 desktop, 0:790 mobile)
+ *
+ * Sticky on every page.
+ *
+ * Two grounds: `solid` for pages without a hero behind the header (paper ground,
+ * ink type), transparent over the home page hero. The transparent one takes on a
+ * dark ground once scrolled, otherwise the light type would land on the pale
+ * sections below the hero and disappear.
+ *
+ * The narrow-screen menu is a <details>, so it opens and closes with no
+ * JavaScript at all. The script at the bottom only adds polish: Escape to close,
+ * closing when focus or a click leaves, and the scrolled flag. Everything still
+ * works with it removed.
+ *
+ * This departs from the library note that mobile reduces to brand plus a wiki
+ * link. With six destinations now (four nav items, language, CTA) a collapsed menu
+ * carries them better than a single link does.
+ */
+import BrandLockup from "./BrandLockup.astro";
+import Button from "./Button.astro";
+import { nav } from "../content/home";
+import { site, wiki, isExternal } from "../content/links";
+
+interface Props {
+  overlay?: boolean;
+  solid?: boolean;
+}
+const { overlay = true, solid = false } = Astro.props;
+
+const tone = solid ? "brand" : "light";
+const linkColor = solid ? "text-ink" : "text-paper";
+
+// Transparent until scrolled, then a dark translucent bar. data-scrolled is set by
+// the script below; without it the header simply stays in its base state.
+// One ground per page, never changing on scroll.
+//
+// Over the home hero the bar is the hero's own colour, so at the top of the page it
+// is indistinguishable from what sits behind it, and it stays exactly that colour
+// once stuck over the pale sections below. Nothing animates, nothing shifts: the
+// header simply never changes.
+const ground = solid ? "bg-paper border-b border-line" : "bg-hero";
+
+const panelGround = solid ? "bg-paper border-line" : "bg-hero border-paper/10";
+---
+
+<header
+  data-site-header
+  class={`sticky top-0 z-50 w-full transition-colors duration-200 ${ground}`}
+>
+  <div class="ns-container flex h-[var(--ns-header-h)] items-center justify-between">
+    <a href="/" class="no-underline" aria-label="Next. Society, home">
+      <BrandLockup brand="society" tone={tone} size="small" />
+    </a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-[40px] lg:flex">
+      {nav.items.map((item) => (
+        <a
+          href={item.href}
+          target={isExternal(item.href) ? "_blank" : undefined}
+          rel={isExternal(item.href) ? "noopener noreferrer" : undefined}
+          class={`text-[15px] font-medium leading-[22px] ${linkColor} no-underline hover:underline underline-offset-4`}
+        >
+          {item.label}
+        </a>
+      ))}
+
+      <span class={`flex items-center gap-[10px] text-[13px] leading-[22px] ${linkColor}`}>
+        <span aria-current="true" class="font-medium">EN</span>
+        <a href={site.de} hreflang="de" class={`font-normal ${linkColor} no-underline hover:underline underline-offset-4`}>DE</a>
+      </span>
+    </nav>
+
+    <span class="hidden lg:block">
+      <Button
+        label={nav.cta.label}
+        href={nav.cta.href}
+        appearance={solid ? "filled" : "inverse"}
+        size="mobile"
+        external
+      />
+    </span>
+
+    <!-- Collapsed menu below lg. <details> carries the open state natively, so the
+         menu works with scripting unavailable. -->
+    <details data-nav class="group lg:hidden">
+      <summary
+        class={`flex h-[44px] w-[44px] cursor-pointer list-none items-center justify-center rounded-ns ${linkColor} [&::-webkit-details-marker]:hidden`}
+        aria-label="Menu"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path class="group-open:hidden" d="M3 6h18M3 12h18M3 18h18" />
+          <path class="hidden group-open:block" d="M5 5l14 14M19 5L5 19" />
+        </svg>
+        <span class="sr-only">Toggle menu</span>
+      </summary>
+
+      <div class={`absolute inset-x-0 top-full border-b ${panelGround}`}>
+        <nav aria-label="Primary" class="ns-container flex flex-col py-[var(--ns-space-16)]">
+          {nav.items.map((item) => (
+            <a
+              href={item.href}
+              target={isExternal(item.href) ? "_blank" : undefined}
+              rel={isExternal(item.href) ? "noopener noreferrer" : undefined}
+              class={`border-b ${solid ? "border-line" : "border-paper/10"} py-[var(--ns-space-16)] text-[17px] font-medium ${linkColor} no-underline`}
+            >
+              {item.label}
+            </a>
+          ))}
+
+          <a
+            href={wiki.root}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={`border-b ${solid ? "border-line" : "border-paper/10"} py-[var(--ns-space-16)] text-[17px] font-medium ${linkColor} no-underline`}
+          >
+            Read the wiki <span aria-hidden="true">↗</span>
+            <span class="sr-only">, opens in a new tab</span>
+          </a>
+
+          <span class={`flex items-center gap-[12px] py-[var(--ns-space-16)] text-[15px] ${linkColor}`}>
+            <span aria-current="true" class="font-medium">EN</span>
+            <span aria-hidden="true" class="opacity-40">/</span>
+            <a href={site.de} hreflang="de" class={`font-normal ${linkColor} no-underline`}>DE</a>
+          </span>
+
+          <Button
+            label={nav.cta.label}
+            href={nav.cta.href}
+            appearance={solid ? "filled" : "inverse"}
+            external
+            class="mt-[var(--ns-space-12)] w-full"
+          />
+        </nav>
+      </div>
+    </details>
+  </div>
+</header>
+
+<script>
+  // Progressive enhancement only. The menu opens and closes without this.
+  const menu = document.querySelector<HTMLDetailsElement>("[data-nav]");
+
+  if (menu) {
+    const close = () => menu.removeAttribute("open");
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menu.open) {
+        close();
+        menu.querySelector("summary")?.focus();
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (menu.open && !menu.contains(event.target as Node)) close();
+    });
+
+    // Closing when the viewport grows avoids an open panel stranded behind the
+    // desktop nav.
+    window.matchMedia("(min-width: 1024px)").addEventListener("change", (event) => {
+      if (event.matches) close();
+    });
+  }
+
+</script>

@@ -1,0 +1,21 @@
+{
+  "name": "next-society-web",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/fetch-wiki.mjs && astro build && node scripts/rebase.mjs",
+    "preview": "astro preview",
+    "fetch:wiki": "node scripts/fetch-wiki.mjs",
+    "rebase": "node scripts/rebase.mjs"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/roboto-mono": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "^7.4.12",
+    "marked": "^18.2.1",
+    "tailwindcss": "^4.3.5"
+  }
+}

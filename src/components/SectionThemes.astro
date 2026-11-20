@@ -1,0 +1,31 @@
+---
+/**
+ * Themes section: the three subbrand cards (Figma frame 05, composed in the
+ * 3.5 Final page).
+ *
+ * The grid is 3-up at the desktop reference width, which is exactly
+ * 3 x 410.667 + 2 x 24 = 1280. auto-fit rather than a fixed 3 columns so a fourth
+ * mission (Next.Research, next.infra issue #20) does not need a layout rewrite.
+ */
+import WikiCard from "./WikiCard.astro";
+import { themes } from "../content/home";
+---
+
+<section class="bg-light py-[64px] md:py-[96px]">
+  <div class="ns-container">
+    <p class="ns-type-eyebrow font-mono text-ink-muted">{themes.eyebrow}</p>
+
+    <div class="mt-[var(--ns-space-16)] flex flex-col justify-between gap-[var(--ns-space-24)] md:flex-row md:items-end">
+      <h2 class="ns-type-section-sm font-medium text-ink">
+        {themes.title.map((line) => <span class="block">{line}</span>)}
+      </h2>
+      <p class="ns-type-body text-ink-muted md:text-right">
+        {themes.intro.map((line) => <span class="block">{line}</span>)}
+      </p>
+    </div>
+
+    <div class="mt-[48px] grid gap-[var(--ns-space-24)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]">
+      {themes.cards.map((card) => <WikiCard {...card} />)}
+    </div>
+  </div>
+</section>

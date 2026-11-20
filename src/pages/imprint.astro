@@ -1,0 +1,23 @@
+---
+import Page from "../layouts/Page.astro";
+import PageHead from "../components/PageHead.astro";
+import ProseSection from "../components/ProseSection.astro";
+import { imprint } from "../content/pages";
+---
+
+<!-- No take-part CTA: a legal notice should not end in a call to action. -->
+<Page
+  title={imprint.title}
+  description="Imprint and legal notice for Next. Society, published by Institute of Electronic Business e.V., Berlin."
+  showCta={false}
+>
+  <PageHead eyebrow={imprint.eyebrow} title={imprint.title} />
+
+  <div class="bg-paper py-[16px] md:py-[24px]">
+    <div class="ns-container">
+      {imprint.sections.map((section) => (
+        <ProseSection title={section.title} lines={section.lines} lang={imprint.lang} size="small" />
+      ))}
+    </div>
+  </div>
+</Page>

@@ -1,0 +1,30 @@
+---
+/**
+ * A titled block of prose on the content grid. The workhorse for the ported pages:
+ * h2 in the dimension role, body in the standard role, measure capped so lines stay
+ * readable. Takes either a single body string or a list of lines.
+ */
+interface Props {
+  title: string;
+  body?: string;
+  lines?: string[];
+  lang?: string;
+  /** small drops the heading a role, for long formal headings such as the imprint's. */
+  size?: "default" | "small";
+  class?: string;
+}
+const { title, body, lines, lang, size = "default", class: className = "" } = Astro.props;
+
+const headingClass = size === "small" ? "ns-type-card-heading" : "ns-type-dimension";
+---
+
+<section class={`border-t border-line py-[40px] first:border-t-0 md:py-[48px] ${className}`} lang={lang}>
+  <div class="grid gap-[var(--ns-space-16)] md:grid-cols-[minmax(0,1fr)_2fr] md:gap-[80px]">
+    <h2 class={`${headingClass} font-medium text-ink`}>{title}</h2>
+    <div class="max-w-[62ch]">
+      {body && <p class="ns-type-body text-ink">{body}</p>}
+      {lines?.map((line) => <p class="ns-type-body text-ink [&+&]:mt-[var(--ns-space-12)]">{line}</p>)}
+      <slot />
+    </div>
+  </div>
+</section>

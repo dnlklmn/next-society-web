@@ -1,0 +1,114 @@
+/* Next. Society design tokens
+ * Source: Figma "Next. Society · Design Library · 3.5" (file 9wmqz40Co3AcMb6QQm3Uuq),
+ * frame "01 · Foundations", read from bound Figma variables (not eyeballed).
+ * Regenerate rather than hand-edit: every value here exists as a Figma variable.
+ */
+:root {
+  /* Brand */
+  --ns-brand-society: #344f52;
+  --ns-brand-education: #50624c;
+  --ns-brand-democracy: #80564e;
+  --ns-brand-economy: #78653f;
+
+  /* Ink and lines */
+  --ns-text-primary: #263734;
+  --ns-text-secondary: #5b665d;
+  --ns-border-subtle: #c6c9bd;
+
+  /* Surfaces */
+  --ns-surface-paper: #f5f2e9;
+  --ns-surface-light: #faf8f2;
+  /* The hero ground. Not a Figma variable: it is the fill of the single rect in
+     the exported hero background ("Papierlage 01"), kept here so the hero needs no
+     background image. */
+  --ns-surface-hero: #132628;
+  --ns-surface-stone: #e5e7de;
+  --ns-surface-lilac: #e8e4ec;
+  --ns-surface-education: #e3e8dd;
+  --ns-surface-democracy: #efdfd5;
+  --ns-surface-economy: #ebe3d2;
+
+  /* Space: 4px base. Only 4/12/16/20 are bound as variables in Figma;
+     24, 56 and 80 appear in the Foundations spec text. */
+  --ns-space-4: 4px;
+  --ns-space-12: 12px;
+  --ns-space-16: 16px;
+  --ns-space-20: 20px;
+  --ns-space-24: 24px;   /* card inset, grid gutter */
+  --ns-space-56: 56px;   /* CTA height */
+  --ns-space-80: 80px;   /* desktop outer margin */
+
+  --ns-radius: 4px;
+  --ns-border-width: 1px;
+
+  /* Layout. 3 x 410.667 + 2 x 24 = 1280, so the card width is the 3-up grid. */
+  --ns-viewport-desktop: 1440px;
+  --ns-content-desktop: 1280px;
+  --ns-margin-desktop: 80px;
+  --ns-viewport-mobile: 390px;
+  --ns-content-mobile: 342px;
+  --ns-margin-mobile: 24px;
+  --ns-card-width: 410.667px;
+  --ns-card-height: 560px;
+  --ns-hero-height: 900px;
+  --ns-hero-height-mobile: 840px;
+
+  /* Header height. The header is sticky, so it occupies flow; the home page hero
+     pulls up by exactly this to keep the design's overlay look. */
+  --ns-header-h: 84px;
+
+  /* Section heights from the layout modules frame (desktop / mobile) */
+  --ns-section-nav: 128px;
+  --ns-section-nav-mobile: 104px;
+  --ns-section-idea: 528px;
+  --ns-section-idea-mobile: 640px;
+  --ns-section-manifesto: 576px;
+  --ns-section-manifesto-mobile: 1000px;
+  --ns-section-participation: 424px;
+  --ns-section-participation-mobile: 440px;
+  --ns-section-footer: 248px;
+  --ns-section-footer-mobile: 312px;
+
+  /* Type families */
+  --ns-font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --ns-font-mono: "Roboto Mono", ui-monospace, "SF Mono", monospace;
+
+  /* Type roles: desktop value, mobile value as a separate token.
+     Figma names each style by family/weight/size-lineheight; these are the roles
+     those styles play in the layout modules. */
+  --ns-type-hero: 400 44px/50px var(--ns-font-sans);
+  --ns-type-hero-mobile: 400 26px/32px var(--ns-font-sans);
+  --ns-type-section-intro: 500 52px/58px var(--ns-font-sans);
+  --ns-type-section-intro-mobile: 500 36px/44px var(--ns-font-sans);
+  --ns-type-section-themes: 500 48px/54px var(--ns-font-sans);
+  --ns-type-section-themes-mobile: 500 34px/40px var(--ns-font-sans);
+  --ns-type-section-manifesto: 500 48px/56px var(--ns-font-sans);
+  --ns-type-section-manifesto-mobile: 500 36px/42px var(--ns-font-sans);
+  --ns-type-cta-heading: 500 44px/52px var(--ns-font-sans);
+  --ns-type-cta-heading-mobile: 500 32px/38px var(--ns-font-sans);
+  --ns-type-body-intro: 400 24px/36px var(--ns-font-sans);
+  --ns-type-body-intro-mobile: 400 19px/29px var(--ns-font-sans);
+  --ns-type-body: 400 18px/28px var(--ns-font-sans);
+  --ns-type-body-mobile: 400 16px/24px var(--ns-font-sans);
+  --ns-type-card-heading: 500 26px/32px var(--ns-font-sans);
+  --ns-type-card-heading-mobile: 500 24px/30px var(--ns-font-sans);
+  --ns-type-dimension-heading: 500 32px/38px var(--ns-font-sans);
+  --ns-type-action-label: 500 16px/20px var(--ns-font-sans);
+  --ns-type-eyebrow: 400 12px/20px var(--ns-font-mono);
+  --ns-type-eyebrow-mobile: 400 11px/18px var(--ns-font-mono);
+  --ns-type-lockup: 500 32px/1 var(--ns-font-sans);
+
+  /* Cut paper material. Figma binds one effect style combining a drop shadow,
+     an inner highlight and 4px noise. CSS can do the first two; the grain has to
+     ride along in the exported PNG or a repeating noise overlay. */
+  --ns-shadow-cut-paper: 2px 4px 3px #0a0f0d52;
+  --ns-inner-cut-paper: inset 0.7px 0.7px 0.6px #fff5d933;
+}
+
+@media (min-width: 768px) {
+  :root { --ns-header-h: 108px; }
+}
+
+@media (min-width: 1024px) {
+  :root { --ns-header-h: 140px; }
+}

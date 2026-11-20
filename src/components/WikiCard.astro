@@ -1,0 +1,64 @@
+---
+/**
+ * NS 3.5/Card/Wiki  (Figma node 0:590 Education, 0:606 Democracy, 0:622 Economy)
+ *
+ * Library note: "Karte bzw. Wiki-CTA als semantischen Link umsetzen; keine
+ * verschachtelten Links." So the whole card is one <a> and the "Read the wiki"
+ * row is presentational, never a second link inside it.
+ *
+ * Desktop 410.67 x 560, mobile 342 x 520, 24px inset, 4px radius. Height is a
+ * minimum here rather than fixed: the headlines are editable and German runs long.
+ */
+import BrandLockup from "./BrandLockup.astro";
+
+interface Props {
+  brand: "education" | "democracy" | "economy";
+  headline: string[];
+  category: string;
+  linkLabel: string;
+  href: string;
+  image: string;
+  alt: string;
+}
+
+const { brand, headline, category, linkLabel, href, image, alt } = Astro.props;
+
+const surfaces = {
+  education: "bg-surface-education",
+  democracy: "bg-surface-democracy",
+  economy: "bg-surface-economy",
+};
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  class={`group flex min-h-[520px] flex-col rounded-ns p-[var(--ns-space-24)] no-underline md:min-h-[560px] ${surfaces[brand]} transition-shadow duration-200 hover:shadow-[var(--ns-shadow-cut-paper)]`}
+>
+  <BrandLockup brand={brand} />
+
+  <img
+    src={image}
+    alt={alt}
+    width="1264"
+    height="848"
+    loading="lazy"
+    decoding="async"
+    class="mt-[var(--ns-space-24)] aspect-[362.667/180] w-full rounded-ns object-cover"
+  />
+
+  <h3 class="ns-type-card-heading mt-auto pt-[var(--ns-space-24)] text-ink">
+    {headline.map((line) => <span class="block">{line}</span>)}
+  </h3>
+
+  <p class="ns-type-eyebrow mt-[var(--ns-space-16)] font-mono text-ink-muted">{category}</p>
+
+  <span class="mt-[var(--ns-space-16)] block h-px w-full bg-line"></span>
+
+  <span class="ns-type-action mt-[var(--ns-space-24)] flex items-center justify-between text-ink">
+    {linkLabel}
+    <span aria-hidden="true" class="text-[24px] leading-[28px] transition-transform duration-200 group-hover:translate-x-1">↗</span>
+    <span class="sr-only">, opens in a new tab</span>
+  </span>
+</a>

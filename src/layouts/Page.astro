@@ -1,0 +1,34 @@
+---
+/**
+ * Shell for the standalone content pages (the ones the old static site had).
+ * Header in its solid variant, page head, content, take-part block, footer.
+ */
+import Base from "./Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import CtaBlock from "../components/CtaBlock.astro";
+import { takePart } from "../content/pages";
+
+interface Props {
+  title: string;
+  description: string;
+  showCta?: boolean;
+}
+const { title, description, showCta = true } = Astro.props;
+---
+
+<Base title={`${title} — Next. Society`} description={description}>
+  <SiteHeader overlay={false} solid />
+  <main id="main">
+    <slot />
+  </main>
+  {showCta && (
+    <CtaBlock
+      eyebrow={takePart.eyebrow}
+      title={takePart.title}
+      body={takePart.body}
+      actions={takePart.actions}
+    />
+  )}
+  <SiteFooter />
+</Base>

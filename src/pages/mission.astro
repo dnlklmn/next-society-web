@@ -1,0 +1,9 @@
+---
+import Page from "../layouts/Page.astro";
+import DimensionPage from "../components/DimensionPage.astro";
+import { mission } from "../content/pages";
+---
+
+<Page title={mission.title} description={mission.lead}>
+  <DimensionPage {...mission} />
+</Page>

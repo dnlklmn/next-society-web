@@ -1,0 +1,35 @@
+---
+/** NS 3.5/Section/Manifesto  (Figma node 0:821 desktop, 0:834 mobile) */
+import { manifesto } from "../content/home";
+import { isExternal } from "../content/links";
+---
+
+<section class="bg-paper py-[64px] md:py-[80px]">
+  <div class="ns-container">
+    <p class="ns-type-eyebrow font-mono text-ink-muted">{manifesto.eyebrow}</p>
+
+    <div class="mt-[var(--ns-space-16)] flex flex-col justify-between gap-[var(--ns-space-24)] md:flex-row md:items-end">
+      <h2 class="ns-type-section-sm max-w-[800px] font-medium text-ink">{manifesto.title}</h2>
+      <p class="ns-type-body max-w-[496px] text-ink-muted">{manifesto.intro}</p>
+    </div>
+
+    <ol class="mt-[64px] grid list-none gap-[48px] p-0 md:grid-cols-3 md:gap-[var(--ns-space-24)]">
+      {manifesto.dimensions.map((dimension) => (
+        <li>
+          <p class="ns-type-eyebrow font-mono text-ink-muted">{dimension.number}</p>
+          <h3 class="ns-type-dimension mt-[var(--ns-space-20)] font-medium">
+            <a
+              href={dimension.href}
+              target={isExternal(dimension.href) ? "_blank" : undefined}
+              rel={isExternal(dimension.href) ? "noopener noreferrer" : undefined}
+              class="text-ink no-underline hover:underline underline-offset-4"
+            >
+              {dimension.title}
+            </a>
+          </h3>
+          <p class="ns-type-body mt-[var(--ns-space-16)] text-ink">{dimension.body}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

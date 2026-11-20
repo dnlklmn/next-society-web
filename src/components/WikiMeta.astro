@@ -1,0 +1,33 @@
+---
+/**
+ * The provenance line on a wiki-rendered page.
+ *
+ * Shows where the page came from and how ripe it is. "Status" is the wiki's own
+ * Jungle / Garden / Park convention; showing it is honest about a living document
+ * and saves a reader from mistaking a draft for settled text.
+ */
+interface Props {
+  status?: string;
+  reviewed?: string;
+  wikiUrl: string;
+}
+const { status, reviewed, wikiUrl } = Astro.props;
+---
+
+<div class="mt-[56px] border-t border-line pt-[var(--ns-space-24)]">
+  <p class="ns-type-eyebrow font-mono text-ink-muted">
+    {status && <span>STATUS: {status.toUpperCase()}</span>}
+    {status && reviewed && <span aria-hidden="true"> · </span>}
+    {reviewed && <span>REVIEWED: {reviewed}</span>}
+  </p>
+  <a
+    href={wikiUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="ns-type-action mt-[var(--ns-space-12)] inline-flex items-center gap-[var(--ns-space-12)] text-ink no-underline hover:underline underline-offset-4"
+  >
+    Edit or discuss this page in the wiki
+    <span aria-hidden="true" class="text-[21px] leading-[24px]">↗</span>
+    <span class="sr-only">, opens in a new tab</span>
+  </a>
+</div>

@@ -1,0 +1,60 @@
+---
+import { ClientRouter } from "astro:transitions";
+
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: string;
+}
+const { title, description, lang = "en" } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// Preview builds ask crawlers to stay away. The wiki's "Start here" collection is
+// shared with indexing switched off, and the 3.5 design library is not published
+// yet, so a shareable preview should not become the canonical copy of either.
+// Set PREVIEW=1 for a preview build; the real site carries no such tag.
+const isPreview = import.meta.env.PREVIEW === "1" || import.meta.env.PUBLIC_PREVIEW === "1";
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/assets/mark-society.svg" type="image/svg+xml" />
+    <meta name="color-scheme" content="light" />
+    {isPreview && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Next. Society" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={lang} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="alternate" hreflang="en" href="https://nextsociety.ieb.net/" />
+    <link rel="alternate" hreflang="de" href="https://nextsociety.ieb.net/de/" />
+
+    <!--
+      Client-side navigation, so moving through the Compendium swaps the document
+      instead of reloading the page. Costs a small router script; everything still
+      renders server-side and every URL is a real static file, so with scripting
+      unavailable the links are ordinary links.
+    -->
+    <ClientRouter />
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="ns-type-action sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-ns focus:bg-paper focus:px-4 focus:py-3 focus:text-society"
+    >
+      Skip to content
+    </a>
+    <slot />
+  </body>
+</html>

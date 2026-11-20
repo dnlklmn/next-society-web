@@ -1,0 +1,9 @@
+---
+import Page from "../layouts/Page.astro";
+import DimensionPage from "../components/DimensionPage.astro";
+import { philosophy } from "../content/pages";
+---
+
+<Page title={philosophy.title} description={philosophy.lead}>
+  <DimensionPage {...philosophy} />
+</Page>

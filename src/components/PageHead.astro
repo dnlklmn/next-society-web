@@ -1,0 +1,27 @@
+---
+/**
+ * Page head for wiki-rendered pages. The library has no design for these yet, so
+ * this is built from the existing roles: mono eyebrow, Inter title, body lead,
+ * exactly as the home page sections do it.
+ *
+ * Titles in the Compendium are full questions ("What are economies actually for?"),
+ * so the title style has to survive 90+ characters.
+ */
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  surface?: string;
+}
+const { eyebrow, title, lead, surface = "bg-paper" } = Astro.props;
+---
+
+<header class={`${surface} pt-[48px] pb-[40px] md:pt-[64px] md:pb-[56px]`}>
+  <div class="ns-container">
+    <p class="ns-type-eyebrow font-mono text-ink-muted">{eyebrow}</p>
+    <h1 class="ns-type-section-sm mt-[var(--ns-space-16)] max-w-[20ch] font-medium text-ink">
+      {title}
+    </h1>
+    {lead && <p class="ns-type-body-intro mt-[var(--ns-space-24)] max-w-[60ch] text-ink-muted">{lead}</p>}
+  </div>
+</header>

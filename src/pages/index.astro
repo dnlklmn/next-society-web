@@ -1,0 +1,23 @@
+---
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SectionHero from "../components/SectionHero.astro";
+import SectionIdea from "../components/SectionIdea.astro";
+import SectionThemes from "../components/SectionThemes.astro";
+import SectionManifesto from "../components/SectionManifesto.astro";
+import SectionParticipation from "../components/SectionParticipation.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import { meta } from "../content/home";
+---
+
+<Base title={meta.title} description={meta.description} lang={meta.lang}>
+  <SiteHeader />
+  <main id="main">
+    <SectionHero />
+    <SectionIdea />
+    <SectionThemes />
+    <SectionManifesto />
+    <SectionParticipation />
+  </main>
+  <SiteFooter />
+</Base>

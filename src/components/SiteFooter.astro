@@ -1,0 +1,44 @@
+---
+/** NS 3.5/Section/Footer  (Figma node 0:868 desktop, 0:877 mobile) */
+import { footer } from "../content/home";
+import { isExternal } from "../content/links";
+---
+
+<footer class="bg-stone">
+  <div class="ns-container">
+    <span class="block h-px w-full bg-line"></span>
+  </div>
+
+  <div class="ns-container grid gap-[var(--ns-space-24)] py-[48px] md:grid-cols-[1fr_auto]">
+    <div>
+      <p class="ns-type-body text-ink">{footer.statement}</p>
+      <a
+        href={footer.openLine.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="ns-type-body mt-[var(--ns-space-20)] inline-block text-[16px] leading-[24px] text-ink-muted no-underline hover:underline underline-offset-4"
+      >
+        {footer.openLine.label} <span aria-hidden="true">↗</span>
+        <span class="sr-only">, opens in a new tab</span>
+      </a>
+    </div>
+
+    <nav aria-label="Footer" class="flex flex-col gap-[var(--ns-space-16)] md:min-w-[240px]">
+      {footer.links.map((link) => (
+        <a
+          href={link.href}
+          target={isExternal(link.href) ? "_blank" : undefined}
+          rel={isExternal(link.href) ? "noopener noreferrer" : undefined}
+          class="text-[14px] font-medium leading-[22px] text-ink no-underline hover:underline underline-offset-4"
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+
+  <div class="ns-container">
+    <span class="block h-px w-full bg-line"></span>
+    <p class="ns-type-eyebrow py-[22px] font-mono text-ink-muted">{footer.colophon}</p>
+  </div>
+</footer>

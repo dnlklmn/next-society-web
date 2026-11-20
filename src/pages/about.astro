@@ -1,0 +1,18 @@
+---
+import Page from "../layouts/Page.astro";
+import PageHead from "../components/PageHead.astro";
+import ProseSection from "../components/ProseSection.astro";
+import { about } from "../content/pages";
+---
+
+<Page title={about.title} description={about.sections[0].body}>
+  <PageHead eyebrow={about.eyebrow} title={about.title} lead={about.sections[0].body} />
+
+  <div class="bg-paper py-[16px] md:py-[24px]">
+    <div class="ns-container">
+      {about.sections.slice(1).map((section) => (
+        <ProseSection title={section.title} body={section.body} />
+      ))}
+    </div>
+  </div>
+</Page>

@@ -1,0 +1,80 @@
+---
+/**
+ * NS 3.5/Action/Button  (Figma node 0:518 / 0:531 / 0:544)
+ *
+ * Figma properties map one to one:
+ *   Appearance -> appearance   Size -> size   Label -> label   Show arrow -> showArrow
+ *
+ * State is not a prop: Default/Hover/Focus/Disabled are CSS states here, which is
+ * what the Figma note asks for ("Disabled in Umsetzung semantisch deaktivieren").
+ * Hover, focus and disabled are flagged in the library as proposals, not approved.
+ *
+ * Renders <a> when href is given, otherwise <button>. Never a div: the design note
+ * says "Karte bzw. Wiki-CTA als semantischen Link umsetzen".
+ */
+interface Props {
+  label: string;
+  href?: string;
+  appearance?: "filled" | "outline" | "inverse";
+  /** auto follows the library: 163px at mobile, 184px from the md breakpoint up. */
+  size?: "auto" | "desktop" | "mobile";
+  showArrow?: boolean;
+  external?: boolean;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  label,
+  href,
+  appearance = "filled",
+  size = "auto",
+  showArrow = true,
+  external = false,
+  disabled = false,
+  class: className = "",
+} = Astro.props;
+
+const appearances = {
+  filled: "bg-society text-paper border border-society hover:bg-ink",
+  outline: "bg-transparent text-society border border-society hover:bg-society hover:text-paper",
+  inverse: "bg-paper text-society border border-paper hover:bg-light",
+};
+
+// 184px desktop / 163px mobile are the library widths. min-width rather than width:
+// Figma notes the width may grow in auto-layout, and German labels run longer.
+const sizes = {
+  auto: "min-w-[163px] md:min-w-[184px]",
+  desktop: "min-w-[184px]",
+  mobile: "min-w-[163px]",
+};
+
+const classes = [
+  "ns-type-action inline-flex h-[56px] items-center justify-between gap-[var(--ns-space-12)]",
+  "pl-[var(--ns-space-20)] pr-[var(--ns-space-16)] rounded-ns no-underline",
+  "transition-colors duration-150",
+  "disabled:opacity-50 disabled:pointer-events-none aria-disabled:opacity-50 aria-disabled:pointer-events-none",
+  appearances[appearance],
+  sizes[size],
+  className,
+].join(" ");
+
+const Tag = href ? "a" : "button";
+const rel = external ? "noopener noreferrer" : undefined;
+const target = external ? "_blank" : undefined;
+---
+
+<Tag
+  class={classes}
+  href={href}
+  target={target}
+  rel={rel}
+  aria-disabled={disabled ? "true" : undefined}
+  disabled={!href && disabled ? true : undefined}
+>
+  <span class="whitespace-nowrap">{label}</span>
+  {showArrow && (
+    <span aria-hidden="true" class="text-[21px] leading-[24px]">↗</span>
+  )}
+  {external && <span class="sr-only">, opens in a new tab</span>}
+</Tag>

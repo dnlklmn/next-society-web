@@ -1,0 +1,307 @@
+@import "tailwindcss";
+
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/roboto-mono/400.css";
+
+@import "./tokens.css";
+
+/* Map the Figma tokens onto Tailwind's theme so utilities exist for them.
+ * `inline` keeps the CSS variables as the single source of truth: change
+ * tokens.css and every utility follows. */
+@theme inline {
+  --color-society: var(--ns-brand-society);
+  --color-education: var(--ns-brand-education);
+  --color-democracy: var(--ns-brand-democracy);
+  --color-economy: var(--ns-brand-economy);
+
+  --color-ink: var(--ns-text-primary);
+  --color-ink-muted: var(--ns-text-secondary);
+  --color-line: var(--ns-border-subtle);
+
+  --color-paper: var(--ns-surface-paper);
+  --color-light: var(--ns-surface-light);
+  --color-hero: var(--ns-surface-hero);
+  --color-stone: var(--ns-surface-stone);
+  --color-lilac: var(--ns-surface-lilac);
+  --color-surface-education: var(--ns-surface-education);
+  --color-surface-democracy: var(--ns-surface-democracy);
+  --color-surface-economy: var(--ns-surface-economy);
+
+  --font-sans: var(--ns-font-sans);
+  --font-mono: var(--ns-font-mono);
+
+  --radius-ns: var(--ns-radius);
+}
+
+/* Fluid type.
+ *
+ * The library gives a desktop value at 1440 and a mobile value at 390, and says
+ * explicitly that those two widths are reference sizes, NOT breakpoints, and
+ * that intermediate widths still have to be agreed. clamp() honours both anchors
+ * exactly and interpolates between them, which beats inventing a breakpoint.
+ * Swap any role for a media query once the intermediate behaviour is decided.
+ */
+@layer base {
+  html {
+    background: var(--ns-surface-paper);
+    color: var(--ns-text-primary);
+    font-family: var(--ns-font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    margin: 0;
+    /* clip, not hidden: `overflow-x: hidden` makes the body a scroll container,
+       which silently stops `position: sticky` working for anything inside it.
+       `clip` prevents the same horizontal overflow without that side effect. */
+    overflow-x: clip;
+  }
+
+  :focus-visible {
+    /* Foundations: 2px ring at 2px offset. Flagged in Figma as a proposal. */
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    border-radius: var(--ns-radius);
+  }
+
+  ::selection {
+    background: var(--ns-surface-lilac);
+    color: var(--ns-text-primary);
+  }
+}
+
+@layer components {
+  /* The page shell: 80px gutter and 1280px content on desktop, 24px and 342px
+     on mobile, both straight from Foundations. */
+  .ns-container {
+    width: 100%;
+    max-width: calc(var(--ns-content-desktop) + 2 * var(--ns-margin-desktop));
+    margin-inline: auto;
+    padding-inline: var(--ns-margin-mobile);
+  }
+
+  @media (min-width: 768px) {
+    .ns-container {
+      padding-inline: var(--ns-margin-desktop);
+    }
+  }
+
+  /* Type roles. Each clamps between the mobile and desktop values in the library. */
+  .ns-type-hero {
+    font: var(--ns-type-hero-mobile);
+    font-size: clamp(26px, 1.0476rem + 4.5vw, 44px);
+    line-height: 1.14;
+  }
+  .ns-type-section {
+    font: var(--ns-type-section-intro-mobile);
+    font-size: clamp(36px, 1.5rem + 4vw, 52px);
+    line-height: 1.12;
+  }
+  .ns-type-section-sm {
+    font: var(--ns-type-section-manifesto-mobile);
+    font-size: clamp(36px, 1.875rem + 3vw, 48px);
+    line-height: 1.17;
+  }
+  .ns-type-cta {
+    font: var(--ns-type-cta-heading-mobile);
+    font-size: clamp(32px, 1.625rem + 3vw, 44px);
+    line-height: 1.18;
+  }
+  .ns-type-body-intro {
+    font: var(--ns-type-body-intro-mobile);
+    font-size: clamp(19px, 1.0625rem + 1.25vw, 24px);
+    line-height: 1.5;
+  }
+  .ns-type-body {
+    font: var(--ns-type-body-mobile);
+    font-size: clamp(16px, 0.9375rem + 0.5vw, 18px);
+    line-height: 1.56;
+  }
+  .ns-type-card-heading {
+    font: var(--ns-type-card-heading-mobile);
+    font-size: clamp(24px, 1.4375rem + 0.5vw, 26px);
+    line-height: 1.23;
+  }
+  .ns-type-dimension {
+    font: var(--ns-type-dimension-heading);
+    font-size: clamp(26px, 1.375rem + 1.5vw, 32px);
+    line-height: 1.19;
+  }
+  .ns-type-eyebrow {
+    font: var(--ns-type-eyebrow-mobile);
+    font-size: clamp(11px, 0.6563rem + 0.125vw, 12px);
+    letter-spacing: 0.02em;
+  }
+  .ns-type-action {
+    font: var(--ns-type-action-label);
+  }
+  .ns-type-lockup {
+    font: var(--ns-type-lockup);
+    font-size: clamp(24px, 1.25rem + 1.5vw, 32px);
+    line-height: 1;
+  }
+
+  /* Header lockup. Same role, a step down, so the sticky bar reads as a bar
+     rather than as a logo with a strip around it. */
+  .ns-type-lockup-sm {
+    font: var(--ns-type-lockup);
+    font-size: clamp(19px, 1rem + 1vw, 24px);
+    line-height: 1;
+  }
+
+  /* Cut paper: Figma binds drop shadow + inner highlight + 4px noise as one
+     effect style. CSS covers the two shadows; the grain lives in the exported
+     artwork itself. */
+  .ns-cut-paper {
+    box-shadow: var(--ns-shadow-cut-paper), var(--ns-inner-cut-paper);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@layer components {
+  /* Wiki prose.
+   *
+   * The wiki is free-form: an editor can write a table, a checklist, a quote or
+   * something nobody anticipated. The rule from the content contract is that
+   * unknown constructs must degrade to something plainer, never break the layout.
+   * So this styles by element, with no class hooks required in the markup.
+   */
+  .ns-prose {
+    max-width: 68ch;
+    color: var(--ns-text-primary);
+  }
+
+  .ns-prose > * + * {
+    margin-block-start: var(--ns-space-24);
+  }
+
+  .ns-prose h2 {
+    font: var(--ns-type-dimension-heading);
+    font-size: clamp(26px, 1.375rem + 1.5vw, 32px);
+    line-height: 1.19;
+    margin-block-start: 56px;
+  }
+
+  .ns-prose h3 {
+    font: var(--ns-type-card-heading-mobile);
+    font-size: clamp(22px, 1.25rem + 0.5vw, 26px);
+    line-height: 1.23;
+    margin-block-start: 40px;
+  }
+
+  .ns-prose h4 {
+    font: var(--ns-type-body);
+    font-weight: 500;
+    margin-block-start: 32px;
+  }
+
+  .ns-prose p,
+  .ns-prose li {
+    font: var(--ns-type-body-mobile);
+    font-size: clamp(16px, 0.9375rem + 0.5vw, 18px);
+    line-height: 1.56;
+  }
+
+  .ns-prose ul,
+  .ns-prose ol {
+    padding-inline-start: 1.25em;
+  }
+
+  .ns-prose li + li {
+    margin-block-start: var(--ns-space-12);
+  }
+
+  .ns-prose a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--ns-border-subtle);
+  }
+
+  .ns-prose a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .ns-prose strong {
+    font-weight: 500;
+  }
+
+  .ns-prose blockquote {
+    margin-inline: 0;
+    padding-inline-start: var(--ns-space-24);
+    border-inline-start: 2px solid var(--ns-border-subtle);
+    color: var(--ns-text-secondary);
+  }
+
+  .ns-prose img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--ns-radius);
+  }
+
+  .ns-prose hr {
+    border: 0;
+    border-top: 1px solid var(--ns-border-subtle);
+    margin-block: 40px;
+  }
+
+  /* Tables carry real content in the wiki, not just the status header. */
+  .ns-prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(15px, 0.9rem + 0.3vw, 17px);
+  }
+
+  .ns-prose th,
+  .ns-prose td {
+    border-bottom: 1px solid var(--ns-border-subtle);
+    padding: var(--ns-space-12) var(--ns-space-12) var(--ns-space-12) 0;
+    text-align: start;
+    vertical-align: top;
+  }
+
+  .ns-prose th {
+    font-weight: 500;
+  }
+
+  .ns-prose code {
+    font-family: var(--ns-font-mono);
+    font-size: 0.9em;
+    background: var(--ns-surface-stone);
+    border-radius: var(--ns-radius);
+    padding: 0.1em 0.35em;
+  }
+
+  .ns-prose pre {
+    overflow-x: auto;
+    background: var(--ns-surface-stone);
+    border-radius: var(--ns-radius);
+    padding: var(--ns-space-20);
+  }
+
+  .ns-prose pre code {
+    background: none;
+    padding: 0;
+  }
+
+  /* Checklists survive from the wiki as real checkboxes; disabled so the page
+     never pretends the state can be changed here. */
+  .ns-prose input[type="checkbox"] {
+    margin-inline-end: var(--ns-space-12);
+    accent-color: var(--ns-brand-society);
+  }
+
+  .ns-prose li:has(> input[type="checkbox"]) {
+    list-style: none;
+    margin-inline-start: -1.25em;
+  }
+}

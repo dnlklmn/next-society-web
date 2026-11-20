@@ -1,0 +1,11 @@
+NextEconomy — Brand assets
+==========================
+Logo (vector):  logo.svg  (in assets/img/)
+Logo (raster):  logo.png  512x512
+
+Colors:  Ink #1A1A20 · Magenta #E6007E · Sky #6EC1E4 · Plum #6B2150 · Mist #F5F3F2
+Type:    Newsreader (display) · Public Sans (body)
+
+Usage: keep clear space around the mark equal to one outer-dot diameter.
+Do not recolor, stretch, or add effects. Shared under CC BY 4.0.
+Contact: press@nexteconomy.net

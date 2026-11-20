@@ -1,0 +1,115 @@
+---
+/**
+ * Table of contents for a wiki collection, kept alongside the document so a reader
+ * can move through the Compendium without going back to the index each time.
+ *
+ * Two presentations of one list: a sticky column from lg up, and a <details>
+ * disclosure below that, so narrow screens are not pushed past a 20-item list to
+ * reach the prose. No JavaScript either way.
+ */
+import type { WikiCollection, WikiDocument } from "../lib/wiki";
+
+interface Props {
+  collection: WikiCollection;
+  current?: string;
+}
+const { collection, current } = Astro.props;
+
+// The active item is styled from aria-current, not from a class decided at build
+// time. With client-side navigation the list is reused across pages, so the
+// highlight has to be movable at runtime, and aria-current is the thing that should
+// move anyway.
+const itemClass = [
+  "block border-l py-[6px] pr-[var(--ns-space-12)] text-[15px] leading-[22px] no-underline transition-colors",
+  "border-line text-ink-muted hover:border-ink hover:text-ink",
+  "aria-[current=page]:border-ink aria-[current=page]:font-medium aria-[current=page]:text-ink",
+].join(" ");
+
+const indent = (doc: WikiDocument) => `padding-inline-start: calc(${Math.min(doc.depth, 3)} * 12px + 16px)`;
+---
+
+<nav aria-label={`${collection.title} contents`}>
+  <!-- lg and up: a sticky column that scrolls on its own when the list is long. -->
+  <!--
+    The sticky offset equals the column's own resting offset (the sticky header plus
+    the main element's top padding). Match them and the list never snaps into place:
+    it is already exactly where it will pin.
+  -->
+  <div
+    data-toc-scroll
+    transition:persist={`toc-${collection.slug}`}
+    class="hidden lg:sticky lg:top-[calc(var(--ns-header-h)+48px)] lg:block lg:max-h-[calc(100vh-var(--ns-header-h)-96px)] lg:overflow-y-auto"
+  >
+    <!-- No heading above the list: the collection's own overview document is the
+         first entry, so a title here printed the same word twice. -->
+    <ul class="list-none p-0">
+      {collection.documents.map((doc) => (
+        <li>
+          <a
+            href={`/${collection.slug}/${doc.slug}`}
+            class={itemClass}
+            data-toc-link
+            style={indent(doc)}
+            aria-current={doc.slug === current ? "page" : undefined}
+          >
+            {doc.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <!-- Below lg: collapsed, so the prose is not pushed below a long list. -->
+  <details class="group border-y border-line lg:hidden">
+    <summary class="ns-type-action flex cursor-pointer list-none items-center justify-between py-[var(--ns-space-16)] text-ink [&::-webkit-details-marker]:hidden">
+      Contents of {collection.title}
+      <span aria-hidden="true" class="text-[21px] transition-transform group-open:rotate-180">⌄</span>
+    </summary>
+    <ul class="list-none pb-[var(--ns-space-16)] pl-0">
+      {collection.documents.map((doc) => (
+        <li>
+          <a
+            href={`/${collection.slug}/${doc.slug}`}
+            class={itemClass}
+            data-toc-link
+            style={indent(doc)}
+            aria-current={doc.slug === current ? "page" : undefined}
+          >
+            {doc.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </details>
+</nav>
+
+<script>
+  // The list element itself is persisted across navigations, so two things need
+  // doing by hand.
+  //
+  // 1. Its highlight is whatever the previous page set, so move it to match the URL.
+  // 2. Moving a DOM node into the new document resets its scrollTop, so a reader
+  //    deep in the Compendium would be thrown back to the top of the list on every
+  //    click. Save the offset before the swap and put it back after.
+  let savedScroll = 0;
+
+  const syncCurrent = () => {
+    for (const link of document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")) {
+      const isCurrent = new URL(link.href).pathname === location.pathname;
+      if (isCurrent) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    }
+  };
+
+  syncCurrent();
+  document.addEventListener("astro:page-load", syncCurrent);
+
+  document.addEventListener("astro:before-swap", () => {
+    savedScroll = document.querySelector("[data-toc-scroll]")?.scrollTop ?? 0;
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    const list = document.querySelector("[data-toc-scroll]");
+    if (list) list.scrollTop = savedScroll;
+  });
+</script>

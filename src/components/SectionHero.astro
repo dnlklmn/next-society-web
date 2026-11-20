@@ -1,0 +1,71 @@
+---
+/**
+ * NS 3.5/Section/Hero  (Figma node 0:795 desktop, 0:802 mobile)
+ *
+ * Two distinct compositions, not one responsive crop. The library is explicit:
+ * "Eigenständiger Mobile-Zuschnitt" — mobile is its own cut of the artwork.
+ *
+ * Nothing here stretches. The exported SVGs carried preserveAspectRatio="none",
+ * which forces non-uniform scaling and defeats object-fit; that attribute has been
+ * stripped from the assets. The hands then scale uniformly with the viewport width
+ * and crop against the section, and the mobile cut fills with object-cover.
+ *
+ * The flat background layer was a single solid rect, so it is a background colour
+ * now rather than an image: one request fewer and nothing left to distort.
+ *
+ * The negative top margin pulls the hero up under the sticky header, preserving the
+ * design's overlay look now that the header occupies flow.
+ */
+import Button from "./Button.astro";
+import { hero } from "../content/home";
+---
+
+<section class="relative isolate -mt-[var(--ns-header-h)] min-h-[840px] overflow-hidden bg-hero md:h-[var(--ns-hero-height)] md:min-h-0">
+  <div class="absolute inset-0 -z-10" aria-hidden="true">
+    <!-- Mobile cut: fills the section, crops, never distorts. -->
+    <img
+      src="/assets/hero-mobile.png"
+      alt=""
+      width="780"
+      height="1680"
+      fetchpriority="high"
+      class="h-full w-full object-cover object-center md:hidden"
+    />
+
+    <!--
+      Desktop composition. In Figma the hands vector is 1987 x 915 placed at
+      (-132, 198) inside the 1440 x 900 frame. Width and both offsets are given as
+      percentages of the section and the height is left to follow, so the artwork
+      scales uniformly at any width and keeps the Figma crop at 1440.
+    -->
+    <img
+      src="/assets/hero-hands.svg"
+      alt=""
+      width="1987"
+      height="915"
+      class="absolute bottom-[-23.667%] left-[-9.167%] hidden h-auto w-[137.986%] max-w-none md:block"
+    />
+  </div>
+
+  <div class="ns-container relative flex min-h-[840px] flex-col justify-end pb-[48px] pt-[var(--ns-header-h)] md:h-[var(--ns-hero-height)] md:min-h-0 md:pb-[80px]">
+    <p class="ns-type-eyebrow font-mono text-paper">{hero.eyebrow}</p>
+
+    <h1 class="ns-type-hero mt-[var(--ns-space-12)] max-w-[900px] font-normal text-paper">
+      {hero.headline}
+    </h1>
+
+    <!-- 163 + 16 + 163 = 342, exactly the mobile content width, so the two CTAs
+         sit side by side at 390 as drawn. -->
+    <div class="mt-[var(--ns-space-24)] grid grid-cols-2 gap-[var(--ns-space-16)] md:flex md:flex-wrap">
+      {hero.actions.map((action) => (
+        <Button
+          label={action.label}
+          href={action.href}
+          appearance={action.appearance}
+          external
+          class="w-full md:w-auto"
+        />
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,90 @@
+---
+/**
+ * One wiki document, with the collection's table of contents beside it.
+ * Routes: /compendium/what-are-economies-actually-for, /economy/about, ...
+ *
+ * The title sits inside the content column rather than in a band above both
+ * columns. That way the contents list starts level with the title instead of
+ * below a full-width header, so it pins without appearing to jump.
+ */
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import WikiMeta from "../../components/WikiMeta.astro";
+import CollectionNav from "../../components/CollectionNav.astro";
+import { collections, brandText, renderMarkdown, leadOf } from "../../lib/wiki";
+
+export function getStaticPaths() {
+  return collections.flatMap((collection) =>
+    collection.documents.map((doc, index) => ({
+      params: { collection: collection.slug, doc: doc.slug },
+      props: {
+        collection,
+        doc,
+        previous: collection.documents[index - 1] ?? null,
+        next: collection.documents[index + 1] ?? null,
+      },
+    })),
+  );
+}
+
+const { collection, doc, previous, next } = Astro.props;
+const html = renderMarkdown(doc.markdown);
+const lead = leadOf(doc.markdown);
+---
+
+<Base title={`${doc.title} — Next. Society`} description={lead}>
+  <SiteHeader overlay={false} solid />
+
+  <main id="main" class="bg-paper pb-[48px] pt-[32px] md:pb-[64px] md:pt-[48px]">
+    <div class="ns-container lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-[64px]">
+      <CollectionNav collection={collection} current={doc.slug} />
+
+      <div class="min-w-0 pt-[32px] lg:pt-0">
+        <!-- The collection keeps its colour here, now that the tinted band is gone. -->
+        <p class={`ns-type-eyebrow font-mono ${brandText[collection.brand]}`}>
+          {collection.title.toUpperCase()}
+        </p>
+
+        <h1 class="ns-type-section-sm mt-[var(--ns-space-16)] max-w-[20ch] font-medium text-ink">
+          {doc.title}
+        </h1>
+
+        <article class="ns-prose mt-[40px]" set:html={html} />
+
+        <div class="max-w-[68ch]">
+          <WikiMeta status={doc.status} reviewed={doc.reviewed} wikiUrl={doc.wikiUrl} />
+        </div>
+
+        <nav
+          aria-label="Within this collection"
+          class="mt-[48px] flex flex-wrap items-start justify-between gap-[var(--ns-space-24)] border-t border-line pt-[var(--ns-space-24)]"
+        >
+          <div class="max-w-[40ch]">
+            {previous && (
+              <a href={`/${collection.slug}/${previous.slug}`} class="no-underline">
+                <span class="ns-type-eyebrow block font-mono text-ink-muted">PREVIOUS</span>
+                <span class="ns-type-body mt-[var(--ns-space-4)] block text-ink hover:underline underline-offset-4">
+                  {previous.title}
+                </span>
+              </a>
+            )}
+          </div>
+
+          <div class="max-w-[40ch] md:text-right">
+            {next && (
+              <a href={`/${collection.slug}/${next.slug}`} class="no-underline">
+                <span class="ns-type-eyebrow block font-mono text-ink-muted">NEXT</span>
+                <span class="ns-type-body mt-[var(--ns-space-4)] block text-ink hover:underline underline-offset-4">
+                  {next.title}
+                </span>
+              </a>
+            )}
+          </div>
+        </nav>
+      </div>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Base>

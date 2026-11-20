@@ -1,0 +1,75 @@
+---
+/**
+ * Collection index: one page per wiki share.
+ * Routes: /start /compendium /education /democracy /economy
+ */
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import PageHead from "../../components/PageHead.astro";
+import { collections, brandSurface, leadOf } from "../../lib/wiki";
+
+export function getStaticPaths() {
+  return collections.map((collection) => ({
+    params: { collection: collection.slug },
+    props: { collection },
+  }));
+}
+
+const { collection } = Astro.props;
+const lead = collection.documents.length
+  ? leadOf(collection.documents[0].markdown, 200)
+  : "";
+---
+
+<Base
+  title={`${collection.title} — Next. Society`}
+  description={lead || `${collection.title}, developed openly in the Next. Society wiki.`}
+>
+  <SiteHeader overlay={false} solid />
+
+  <main id="main">
+    <PageHead
+      eyebrow="FROM THE WIKI"
+      title={collection.title}
+      lead={lead}
+      surface={brandSurface[collection.brand]}
+    />
+
+    <div class="bg-paper py-[56px] md:py-[72px]">
+      <div class="ns-container">
+        <ol class="grid list-none gap-px bg-line p-0">
+          {collection.documents.map((doc) => (
+            <li class="bg-paper">
+              <a
+                href={`/${collection.slug}/${doc.slug}`}
+                class="group flex items-baseline gap-[var(--ns-space-16)] py-[var(--ns-space-16)] no-underline md:py-[var(--ns-space-20)]"
+                style={`--depth: ${Math.min(doc.depth, 3)}`}
+              >
+                <!-- Titles line up as a contents list; depth carries the structure
+                     and status sits out of the way on the right. -->
+                <span
+                  class="ns-type-dimension min-w-0 font-medium text-ink group-hover:underline underline-offset-4"
+                  style="margin-inline-start: calc(var(--depth) * 16px)"
+                >
+                  {doc.title}
+                </span>
+                <span class="ns-type-eyebrow ml-auto hidden shrink-0 font-mono text-ink-muted sm:block">
+                  {doc.status ? doc.status.toUpperCase() : ""}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+
+        {collection.documents.length === 0 && (
+          <p class="ns-type-body text-ink-muted">
+            Nothing published from this collection yet.
+          </p>
+        )}
+      </div>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Base>

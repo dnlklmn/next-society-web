@@ -1,0 +1,50 @@
+---
+import Page from "../layouts/Page.astro";
+import PageHead from "../components/PageHead.astro";
+import ProseSection from "../components/ProseSection.astro";
+import Button from "../components/Button.astro";
+import { press } from "../content/pages";
+---
+
+<Page title={press.title} description={press.sections[0].body}>
+  <PageHead eyebrow={press.eyebrow} title={press.title} lead={press.sections[0].body} />
+
+  <div class="bg-paper py-[16px] md:py-[24px]">
+    <div class="ns-container">
+      {press.sections.slice(1).map((section) => (
+        <ProseSection title={section.title} body={section.body} />
+      ))}
+
+      <ProseSection title={press.facts.title}>
+        <ul class="ns-type-body m-0 list-none p-0 text-ink">
+          {press.facts.items.map((item) => (
+            <li class="border-b border-line py-[var(--ns-space-12)] first:pt-0 last:border-0">{item}</li>
+          ))}
+        </ul>
+      </ProseSection>
+
+      <ProseSection title={press.assets.title} body={press.assets.body}>
+        <!-- download, not target=_blank: these are files, and the attribute tells
+             the browser to save rather than try to render them. -->
+        <div class="mt-[var(--ns-space-24)] flex flex-wrap gap-[var(--ns-space-16)]">
+          {press.assets.downloads.map((file) => (
+            <a
+              href={file.href}
+              download
+              class={`ns-type-action inline-flex h-[56px] min-w-[163px] items-center justify-between gap-[var(--ns-space-12)] rounded-ns pl-[var(--ns-space-20)] pr-[var(--ns-space-16)] no-underline transition-colors duration-150 md:min-w-[184px] ${
+                file.primary
+                  ? "border border-society bg-society text-paper hover:bg-ink"
+                  : "border border-society bg-transparent text-society hover:bg-society hover:text-paper"
+              }`}
+            >
+              <span class="whitespace-nowrap">{file.label}</span>
+              <span aria-hidden="true" class="text-[21px] leading-[24px]">↓</span>
+            </a>
+          ))}
+        </div>
+      </ProseSection>
+
+      <ProseSection title={press.contact.title} body={press.contact.body} />
+    </div>
+  </div>
+</Page>

@@ -1,0 +1,14 @@
+---
+/** NS 3.5/Section/Idea  (Figma node 0:811 desktop, 0:815 mobile) */
+import { idea } from "../content/home";
+---
+
+<section class="bg-society py-[64px] md:py-[80px]">
+  <div class="ns-container grid gap-[var(--ns-space-24)] md:grid-cols-[1fr_1.7fr] md:gap-[80px]">
+    <div>
+      <p class="ns-type-eyebrow font-mono text-stone">{idea.eyebrow}</p>
+      <h2 class="ns-type-section mt-[var(--ns-space-16)] font-medium text-paper">{idea.title}</h2>
+    </div>
+    <p class="ns-type-body-intro max-w-[760px] text-paper">{idea.body}</p>
+  </div>
+</section>

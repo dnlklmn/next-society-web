@@ -1,0 +1,9 @@
+---
+import Page from "../layouts/Page.astro";
+import DimensionPage from "../components/DimensionPage.astro";
+import { playbook } from "../content/pages";
+---
+
+<Page title={playbook.title} description={playbook.lead}>
+  <DimensionPage {...playbook} />
+</Page>

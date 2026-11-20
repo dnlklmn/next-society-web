@@ -1,0 +1,60 @@
+---
+/**
+ * NS 3.5/Brand/<name> lockups (Figma nodes 0:178 Society, 0:261 Education, ...)
+ *
+ * "Original-Lockup aus Entwurf 3.5. Proportionen und Anordnung bewahren."
+ * The mark keeps its intrinsic ratio; the wordmark sets on two lines at 100%
+ * line height, which is the dedicated --ns-type-lockup role.
+ */
+interface Props {
+  brand?: "society" | "education" | "democracy" | "economy";
+  /** light = the contrast version for dark grounds (Society on the hero). */
+  tone?: "brand" | "light";
+  /** small is the header lockup: the full-size one crowds a sticky bar. */
+  size?: "default" | "small";
+  class?: string;
+}
+
+const { brand = "society", tone = "brand", size = "default", class: className = "" } = Astro.props;
+
+// The mark keeps its 71.094 x 76.619 ratio at every size.
+const markSize =
+  size === "small"
+    ? "h-[40px] w-[37px] md:h-[48px] md:w-[45px] lg:h-[56px] lg:w-[52px]"
+    : "h-[56px] w-[52px] md:h-[77px] md:w-[71px]";
+
+const wordSize = size === "small" ? "ns-type-lockup-sm" : "ns-type-lockup";
+const gap = size === "small" ? "gap-[14px]" : "gap-[20px]";
+
+const words = {
+  society: "Society",
+  education: "Education",
+  democracy: "Democracy",
+  economy: "Economy",
+};
+
+const toneClass =
+  tone === "light"
+    ? "text-paper"
+    : { society: "text-society", education: "text-education", democracy: "text-democracy", economy: "text-economy" }[brand];
+---
+
+<span class={`inline-flex items-center ${gap} ${className}`}>
+  <!--
+    The mark is drawn as a mask rather than an <img> so it inherits the current
+    text colour. The exported SVG is the light contrast version, which is correct
+    on the dark hero but invisible on a paper ground; masking makes one asset work
+    on both without shipping a second file or filtering the colour.
+  -->
+  <span
+    aria-hidden="true"
+    class={`block shrink-0 ${markSize} ${toneClass}`}
+    style={`background-color: currentColor;
+            -webkit-mask: url(/assets/mark-${brand}.svg) no-repeat center / contain;
+            mask: url(/assets/mark-${brand}.svg) no-repeat center / contain;`}
+  ></span>
+  <span class={`${wordSize} ${toneClass}`}>
+    <span class="block">Next.</span>
+    <span class="block">{words[brand]}</span>
+  </span>
+</span>
